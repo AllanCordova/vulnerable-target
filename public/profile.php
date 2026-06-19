@@ -18,7 +18,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     try {
         // Intentionally vulnerable: unsanitized email in UPDATE (SQL injection).
-        $sql = "UPDATE users SET email = '".$email."', bio = '".$bio."' WHERE id = ".(int) $user['id'];
+$stmt = db()->prepare('UPDATE users SET email = :email, bio = :bio WHERE id = :id');
+$stmt->execute(['email' => $email, 'bio' => $bio, 'id' => (int) $user['id']]);
         db()->exec($sql);
 
         $stmt = db()->prepare('SELECT id, email, bio FROM users WHERE id = :id LIMIT 1');
