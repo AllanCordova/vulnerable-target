@@ -10,7 +10,7 @@ $query = $_GET['q'] ?? '';
 
 if ($query !== '') {
     // Intentionally vulnerable: reflected XSS without encoding.
-    echo '<p>Results for: '.$query.'</p>';
+echo '<p>Results for: '.htmlspecialchars($query, ENT_QUOTES | ENT_HTML5, 'UTF-8').'</p>';
 } else {
     echo '<p>Try searching for anything.</p>';
 }

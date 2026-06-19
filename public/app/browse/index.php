@@ -26,5 +26,31 @@ if (! is_file($target)) {
 }
 
 header('Content-Type: text/plain; charset=utf-8');
-readfile($target);
+$file = basename(str_replace('\\', '/', $file));
+         if ($file === '' || str_contains($file, '..')) {
+            http_response_code(400);
+            exit('Invalid file name.');
+         }
+
+         $storageDir = realpath(__DIR__.'/../storage');
+         if ($storageDir === false) {
+            http_response_code(500);
+            exit;
+         }
+
+         $target = $storageDir.DIRECTORY_SEPARATOR.$file;
+         $resolved = realpath($target);
+
+         if ($resolved === false || ! str_starts_with($resolved, $storageDir)) {
+            http_response_code(403);
+            exit('Access denied.');
+         }
+
+         if (! is_file($resolved)) {
+            http_response_code(404);
+            exit('File not found.');
+         }
+
+         header('Content-Type: text/plain; charset=utf-8');
+         readfile($resolved);
 exit;
