@@ -37,7 +37,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     try {
         // Intentionally vulnerable: string concatenation (SQL injection).
-        $sql = "SELECT * FROM users WHERE email = '".$email."' AND password = '".$password."' LIMIT 1";
+$stmt = db()->prepare('SELECT * FROM users WHERE email = ? AND password = ? LIMIT 1');
+$stmt->execute([$email, $password]);
+$user = $stmt->fetch(PDO::FETCH_ASSOC) ?: false;
         $result = db()->query($sql);
         $user = $result ? $result->fetch(PDO::FETCH_ASSOC) : false;
 
